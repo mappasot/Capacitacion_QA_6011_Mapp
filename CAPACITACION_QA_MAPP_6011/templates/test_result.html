@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Resultado - {{ modulo.nombre }}{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto fade-in">
+    <!-- Result Header -->
+    <div class="bg-white rounded-xl shadow-md p-8 mb-6 text-center">
+        {% if aprobado %}
+        <div class="text-6xl mb-4" aria-hidden="true">🎉</div>
+        <h1 class="text-3xl font-bold text-walmart-green">¡Aprobado!</h1>
+        {% else %}
+        <div class="text-6xl mb-4" aria-hidden="true">💪</div>
+        <h1 class="text-3xl font-bold text-walmart-red">Sigue intentando</h1>
+        {% endif %}
+        <p class="text-5xl font-bold mt-4 {% if aprobado %}text-walmart-green{% else %}text-walmart-red{% endif %}">
+            {{ porcentaje }}%
+        </p>
+        <p class="text-walmart-gray-100 mt-2">{{ correctas }} de {{ total }} respuestas correctas</p>
+        <p class="text-sm text-walmart-gray-100">Módulo: {{ modulo.nombre }}</p>
+    </div>
+
+    <!-- Detail -->
+    <h2 class="text-lg font-bold text-walmart-blue mb-4">Revisión de respuestas:</h2>
+    {% for res in resultados %}
+    <div class="bg-white rounded-xl shadow-md p-6 mb-4 {% if res.correcta %}border-l-4 border-walmart-green{% else %}border-l-4 border-walmart-red{% endif %}">
+        <div class="flex items-start gap-3">
+            <span class="text-xl" aria-hidden="true">{% if res.correcta %}✅{% else %}❌{% endif %}</span>
+            <div>
+                <p class="font-medium">{{ res.pregunta }}</p>
+                {% if not res.correcta %}
+                <p class="text-sm text-walmart-red mt-2">
+                    <strong>Tu respuesta:</strong> {{ modulo.preguntas[loop.index0].opciones[res.respuesta_usuario] if res.respuesta_usuario >= 0 else 'Sin respuesta' }}
+                </p>
+                <p class="text-sm text-walmart-green">
+                    <strong>Respuesta correcta:</strong> {{ modulo.preguntas[loop.index0].opciones[res.respuesta_correcta] }}
+                </p>
+                {% endif %}
+                <div class="mt-2 bg-walmart-gray-5 rounded-lg p-3">
+                    <p class="text-sm text-walmart-gray-100">
+                        <strong>💡 Explicación:</strong> {{ res.explicacion }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+        {% if not aprobado %}
+        <a href="/modulo/{{ colaborador[0] }}/{{ modulo.id }}"
+           class="flex-1 bg-walmart-spark text-walmart-gray-160 py-3 px-6 rounded-lg font-medium text-center hover:opacity-90 transition-opacity">
+            📚 Repasar contenido
+        </a>
+        <a href="/test/{{ colaborador[0] }}/{{ modulo.id }}"
+           class="flex-1 bg-walmart-blue text-white py-3 px-6 rounded-lg font-medium text-center hover:bg-walmart-blue-hover transition-colors">
+    🔄 Reintentar test
+        </a>
+        {% else %}
+        <a href="/dashboard/{{ colaborador[0] }}"
+           class="flex-1 bg-walmart-blue text-white py-3 px-6 rounded-lg font-medium text-center hover:bg-walmart-blue-hover transition-colors">
+            → Siguiente módulo
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

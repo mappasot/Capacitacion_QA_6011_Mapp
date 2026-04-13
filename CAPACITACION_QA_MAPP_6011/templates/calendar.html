@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Calendario de Sesiones{% endblock %}
+{% block content %}
+<div class="fade-in">
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h1 class="text-2xl font-bold text-walmart-blue">📅 Calendario de Capacitación</h1>
+        <p class="text-walmart-gray-100">Programa y gestiona las sesiones semanales</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Schedule Form -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-xl shadow-md p-6 sticky top-6">
+                <h2 class="text-lg font-bold text-walmart-blue mb-4">➕ Agendar Sesión</h2>
+                <form action="/admin/calendario/agregar" method="POST">
+                    <label for="semana" class="block text-sm font-medium mb-1">Semana:</label>
+                    <select name="semana" id="semana" required
+                            class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-walmart-blue">
+                        {% for week in weeks %}
+                        <option value="{{ week.semana }}">S{{ week.semana }} - {{ week.titulo }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="fecha_programada" class="block text-sm font-medium mb-1">Fecha y hora:</label>
+                    <input type="datetime-local" name="fecha_programada" id="fecha_programada" required
+                           class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-walmart-blue">
+
+                    <label for="duracion_min" class="block text-sm font-medium mb-1">Duración (min):</label>
+                    <select name="duracion_min" id="duracion_min"
+                            class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-walmart-blue">
+                        <option value="30">30 minutos</option>
+                        <option value="45">45 minutos</option>
+                        <option value="60" selected>1 hora</option>
+                        <option value="90">1.5 horas</option>
+                        <option value="120">2 horas</option>
+                    </select>
+
+                    <label for="notas" class="block text-sm font-medium mb-1">Notas:</label>
+                    <textarea name="notas" id="notas" rows="3" placeholder="Instrucciones adicionales..."
+                              class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-walmart-blue"></textarea>
+
+                    <button type="submit"
+                            class="w-full bg-walmart-blue text-white py-3 px-4 rounded-lg font-medium hover:bg-walmart-blue-hover transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-walmart-blue">
+                        Agendar Sesión ✦
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sessions List -->
+        <div class="lg:col-span-2">
+            <h2 class="text-lg font-bold text-walmart-blue mb-4">Sesiones Programadas</h2>
+            {% if sesiones %}
+            <div class="space-y-4">
+                {% for sesion in sesiones %}
+                <div class="bg-white rounded-xl shadow-md p-6 {% if sesion[6] == 'completada' %}border-l-4 border-walmart-green{% elif sesion[6] == 'en_progreso' %}border-l-4 border-walmart-spark{% else %}border-l-4 border-walmart-blue{% endif %}">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-walmart-spark text-walmart-gray-160 px-2 py-1 rounded text-xs font-bold">S{{ sesion[1] }}</span>
+                                <h3 class="font-medium">{{ sesion[2] }}</h3>
+                            </div>
+                            <p class="text-sm text-walmart-gray-100 mt-1">📅 {{ sesion[4] }} | ⏱ {{ sesion[5] }} min</p>
+                            {% if sesion[7] %}
+                            <p class="text-sm text-walmart-gray-100 mt-1">📝 {{ sesion[7] }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <form action="/admin/calendario/estado/{{ sesion[0] }}" method="POST" class="flex gap-1">
+                                <select name="estado" class="text-xs border rounded p-1 focus:ring-2 focus:ring-walmart-blue">
+                                    <option value="pendiente" {% if sesion[6] == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                                    <option value="en_progreso" {% if sesion[6] == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+                                    <option value="completada" {% if sesion[6] == 'completada' %}selected{% endif %}>Completada</option>
+                                    <option value="cancelada" {% if sesion[6] == 'cancelada' %}selected{% endif %}>Cancelada</option>
+                                </select>
+                                <button type="submit" class="bg-walmart-gray-10 text-walmart-gray-160 px-2 py-1 rounded text-xs hover:bg-walmart-gray-50 transition-colors">
+                                    ✔
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="bg-white rounded-xl shadow-md p-12 text-center">
+                <p class="text-walmart-gray-100 text-lg">No hay sesiones programadas aún.</p>
+                <p class="text-sm text-walmart-gray-100 mt-2">Usa el formulario para agendar la primera sesión →</p>
+            </div>
+            {% endif %}
+
+            <!-- Suggested Calendar -->
+            <div class="mt-6 bg-white rounded-xl shadow-md p-6 spark-border">
+                <h3 class="font-bold text-walmart-spark-dark mb-3">💡 Calendario Sugerido (8 semanas)</h3>
+                <div class="space-y-2 text-sm">
+                    {% for week in weeks %}
+                    <div class="flex items-center gap-3 p-2 rounded hover:bg-walmart-gray-5">
+                        <span class="bg-walmart-blue text-white px-2 py-1 rounded text-xs font-bold w-8 text-center">S{{ week.semana }}</span>
+                        <span class="font-medium">{{ week.titulo }}</span>
+                        <span class="text-walmart-gray-100">({{ week.modulos|length }} módulos)</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-4 p-3 bg-walmart-gray-5 rounded-lg">
+                    <p class="text-xs text-walmart-gray-100">
+                        <strong>📈 Recomendación:</strong> Programar 1-2 sesiones por semana de 60 minutos.
+                        Incluir tiempo para práctica supervisada después de cada sesión teórica.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

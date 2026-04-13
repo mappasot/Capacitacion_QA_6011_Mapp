@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Test - {{ modulo.nombre }}{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto fade-in">
+    <nav class="mb-4 text-sm" aria-label="Breadcrumb">
+        <a href="/modulo/{{ colaborador[0] }}/{{ modulo.id }}" class="text-walmart-blue hover:underline">← Volver al módulo</a>
+    </nav>
+
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h1 class="text-2xl font-bold text-walmart-blue">📝 Test: {{ modulo.nombre }}</h1>
+        <p class="text-walmart-gray-100 mt-1">Responde todas las preguntas. Necesitas <strong>70%</strong> para aprobar.</p>
+        <p class="text-sm text-walmart-spark-dark mt-1">✦ {{ modulo.preguntas|length }} preguntas</p>
+    </div>
+
+    <form action="/test/{{ colaborador[0] }}/{{ modulo.id }}" method="POST">
+        {% for preg in modulo.preguntas %}
+        {% set pregunta_idx = loop.index0 %}
+        <div class="bg-white rounded-xl shadow-md p-6 mb-4 fade-in">
+            <fieldset>
+                <legend class="text-lg font-medium text-walmart-gray-160 mb-4">
+                    <span class="bg-walmart-blue text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm mr-2">{{ loop.index }}</span>
+                    {{ preg.pregunta }}
+                </legend>
+                <div class="space-y-3">
+                    {% for opcion in preg.opciones %}
+                    <label class="flex items-center gap-3 p-3 rounded-lg border border-walmart-gray-50 hover:border-walmart-blue hover:bg-blue-50 transition-all cursor-pointer">
+                        <input type="radio" name="pregunta_{{ pregunta_idx }}" value="{{ loop.index0 }}" required
+                               class="w-4 h-4 text-walmart-blue focus:ring-walmart-blue">
+                        <span>{{ opcion }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        </div>
+        {% endfor %}
+
+        <button type="submit"
+                class="w-full bg-walmart-blue text-white py-4 px-6 rounded-xl font-bold text-lg hover:bg-walmart-blue-hover transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-walmart-blue shadow-md">
+            ✦ Enviar Respuestas
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8 fade-in">
+        <span class="text-6xl" aria-hidden="true">✦</span>
+        <h1 class="text-3xl font-bold text-walmart-blue mt-4">Programa de Capacitación QA</h1>
+        <p class="text-walmart-gray-100 mt-2">Nivelación de conocimientos teóricos y prácticos</p>
+        <p class="text-walmart-gray-100 text-sm">Centro de Distribución Quilicura - 2026</p>
+    </div>
+
+    {% if request.query_params.get('error') == 'rut_duplicado' %}
+    <div class="bg-red-50 border-l-4 border-walmart-red p-4 mb-6 rounded" role="alert">
+        <p class="text-walmart-red font-medium">⚠️ El RUT ingresado ya está registrado. Selecciona tu nombre de la lista.</p>
+    </div>
+    {% endif %}
+
+    <div class="grid md:grid-cols-2 gap-6">
+        <!-- Login existente -->
+        <div class="bg-white rounded-xl shadow-md p-6 fade-in">
+            <h2 class="text-lg font-bold text-walmart-blue mb-4 flex items-center gap-2">
+                <span aria-hidden="true">👤</span> Ya estoy registrado
+            </h2>
+            {% if colaboradores %}
+            <form action="/login" method="POST">
+                <label for="colaborador_id" class="block text-sm font-medium mb-2">Selecciona tu nombre:</label>
+                <select name="colaborador_id" id="colaborador_id" required
+                        class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-walmart-blue focus:border-walmart-blue">
+                    {% for col in colaboradores %}
+                    <option value="{{ col[0] }}">{{ col[1] }} ({{ col[2] }})</option>
+                    {% endfor %}
+                </select>
+                <button type="submit"
+                        class="w-full bg-walmart-blue text-white py-3 px-4 rounded-lg font-medium hover:bg-walmart-blue-hover active:bg-walmart-blue-pressed transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-walmart-blue">
+                    Ingresar →
+                </button>
+            </form>
+            {% else %}
+            <p class="text-walmart-gray-100 text-center py-8">No hay colaboradores registrados aún. ¡Regístrate!</p>
+            {% endif %}
+        </div>
+
+        <!-- Registro nuevo -->
+        <div class="bg-white rounded-xl shadow-md p-6 fade-in">
+            <h2 class="text-lg font-bold text-walmart-green mb-4 flex items-center gap-2">
+                <span aria-hidden="true">➕</span> Nuevo registro
+            </h2>
+            <form action="/registro" method="POST">
+                <label for="nombre" class="block text-sm font-medium mb-1">Nombre completo:</label>
+                <input type="text" name="nombre" id="nombre" required placeholder="Ej: Juan Salinas"
+                       class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-walmart-blue">
+
+                <label for="rut" class="block text-sm font-medium mb-1">RUT:</label>
+                <input type="text" name="rut" id="rut" required placeholder="Ej: 12.345.678-9"
+                       class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-walmart-blue">
+
+                <label for="cargo" class="block text-sm font-medium mb-1">Cargo:</label>
+                <select name="cargo" id="cargo"
+                        class="w-full border border-walmart-gray-50 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-walmart-blue">
+                    <option value="Control de Inventario">Control de Inventario</option>
+                    <option value="Preliquidacion & Devoluciones">Preliquidacion & Devoluciones</option>
+                    <option value="Auditor">Auditor</option>
+                    <option value="Analista QA">Analista QA</option>
+                    <option value="Practicante QA">Practicante QA</option>
+                    <option value="Supervisor QA">Supervisor QA</option>
+                    <option value="Líder QA">Líder QA</option>
+                </select>
+
+                <button type="submit"
+                        class="w-full bg-walmart-green text-white py-3 px-4 rounded-lg font-medium hover:opacity-90 transition-opacity focus:ring-2 focus:ring-offset-2 focus:ring-walmart-green">
+                    Registrarme ✦
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info del programa -->
+    <div class="mt-8 bg-white rounded-xl shadow-md p-6 spark-border fade-in">
+        <h3 class="font-bold text-walmart-spark-dark mb-3">🎯 Sobre este programa</h3>
+        <div class="grid md:grid-cols-4 gap-4 text-sm">
+            <div class="text-center p-3 bg-walmart-gray-5 rounded-lg">
+                <p class="text-2xl font-bold text-walmart-blue">8</p>
+                <p class="text-walmart-gray-100">Semanas</p>
+            </div>
+            <div class="text-center p-3 bg-walmart-gray-5 rounded-lg">
+                <p class="text-2xl font-bold text-walmart-blue">24</p>
+                <p class="text-walmart-gray-100">Módulos</p>
+            </div>
+            <div class="text-center p-3 bg-walmart-gray-5 rounded-lg">
+                <p class="text-2xl font-bold text-walmart-blue">24</p>
+                <p class="text-walmart-gray-100">Tests</p>
+            </div>
+            <div class="text-center p-3 bg-walmart-gray-5 rounded-lg">
+                <p class="text-2xl font-bold text-walmart-blue">70%</p>
+                <p class="text-walmart-gray-100">Nota aprobación</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

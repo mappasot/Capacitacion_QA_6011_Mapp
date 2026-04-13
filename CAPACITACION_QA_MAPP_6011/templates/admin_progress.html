@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Progreso del Equipo{% endblock %}
+{% block content %}
+<div class="fade-in">
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h1 class="text-2xl font-bold text-walmart-blue">📊 Progreso del Equipo</h1>
+        <p class="text-walmart-gray-100">Vista general del avance de capacitación</p>
+    </div>
+
+    {% if team_progress %}
+    <!-- Team Table -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-walmart-blue text-white">
+                        <th class="px-6 py-3 text-left text-sm font-medium" scope="col">Colaborador</th>
+                        <th class="px-6 py-3 text-center text-sm font-medium" scope="col">Módulos</th>
+                        <th class="px-6 py-3 text-center text-sm font-medium" scope="col">Progreso</th>
+                        <th class="px-6 py-3 text-center text-sm font-medium" scope="col">Tests Aprobados</th>
+                        <th class="px-6 py-3 text-center text-sm font-medium" scope="col">Promedio Notas</th>
+                        <th class="px-6 py-3 text-center text-sm font-medium" scope="col">Detalle</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-walmart-gray-10">
+                    {% for item in team_progress %}
+                    <tr class="hover:bg-walmart-gray-5 transition-colors">
+                        <td class="px-6 py-4">
+                            <div>
+                                <p class="font-medium">{{ item.colaborador[1] }}</p>
+                                <p class="text-xs text-walmart-gray-100">{{ item.colaborador[3] }}</p>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">{{ item.completados }}/{{ item.total }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 bg-walmart-gray-10 rounded-full h-4" role="progressbar" 
+                                     aria-valuenow="{{ item.porcentaje }}" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="h-4 rounded-full transition-all {% if item.porcentaje >= 70 %}bg-walmart-green{% elif item.porcentaje >= 40 %}bg-walmart-spark{% else %}bg-walmart-blue{% endif %}"
+                                         style="width: {{ item.porcentaje }}%"></div>
+                                </div>
+                                <span class="text-sm font-medium w-12 text-right">{{ item.porcentaje }}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="{% if item.tests_aprobados > 0 %}text-walmart-green{% else %}text-walmart-gray-100{% endif %} font-medium">
+                                {{ item.tests_aprobados }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if item.promedio_notas > 0 %}
+                                <span class="{% if item.promedio_notas >= 70 %}text-walmart-green{% else %}text-walmart-red{% endif %} font-bold">
+                                    {{ item.promedio_notas }}%
+                                </span>
+                            {% else %}
+                                <span class="text-walmart-gray-100">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <a href="/admin/progreso/{{ item.colaborador[0] }}"
+                               class="bg-walmart-blue text-white text-xs px-3 py-2 rounded-lg hover:bg-walmart-blue-hover transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-walmart-blue"
+                               aria-label="Ver evolutivo de {{ item.colaborador[1] }}">
+                                Ver evolutivo →
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Week Summary -->
+    <h2 class="text-lg font-bold text-walmart-blue mb-4">Resumen por Semana</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {% for week in weeks %}
+        <div class="bg-white rounded-xl shadow-md p-4">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="bg-walmart-spark text-walmart-gray-160 px-2 py-1 rounded text-xs font-bold">S{{ week.semana }}</span>
+                <h3 class="text-sm font-medium">{{ week.titulo }}</h3>
+            </div>
+            <p class="text-xs text-walmart-gray-100">{{ week.modulos|length }} módulos</p>
+            <ul class="mt-2 space-y-1">
+                {% for mod in week.modulos %}
+                <li class="text-xs text-walmart-gray-100">• {{ mod.nombre }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl shadow-md p-12 text-center">
+        <p class="text-walmart-gray-100 text-lg">No hay colaboradores registrados aún.</p>
+        <a href="/" class="text-walmart-blue hover:underline mt-2 inline-block">Ir al registro →</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

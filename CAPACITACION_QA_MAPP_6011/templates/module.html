@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ modulo.nombre }}{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto fade-in">
+    <!-- Breadcrumb -->
+    <nav class="mb-4 text-sm" aria-label="Breadcrumb">
+        <a href="/dashboard/{{ colaborador[0] }}" class="text-walmart-blue hover:underline">← Volver al Dashboard</a>
+        <span class="text-walmart-gray-100 mx-2">/</span>
+        <span class="text-walmart-gray-100">Semana {{ modulo.semana }}</span>
+    </nav>
+
+    <!-- Module Header -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <span class="bg-walmart-spark text-walmart-gray-160 px-2 py-1 rounded text-sm font-medium">Semana {{ modulo.semana }}</span>
+                <h1 class="text-2xl font-bold text-walmart-blue mt-2">{{ modulo.nombre }}</h1>
+                <p class="text-sm text-walmart-gray-100 mt-1">Procedimiento: {{ modulo.procedimiento }}</p>
+            </div>
+            {% if completado %}
+                <span class="bg-green-100 text-walmart-green px-3 py-1 rounded-full text-sm font-medium">✅ Completado</span>
+            {% else %}
+                <span class="bg-walmart-gray-10 text-walmart-gray-100 px-3 py-1 rounded-full text-sm">⏳ En progreso</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Objectives -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6 spark-border">
+        <h2 class="text-lg font-bold text-walmart-spark-dark mb-3">🎯 Objetivos de Aprendizaje</h2>
+        <ul class="space-y-2">
+            {% for obj in modulo.objetivos %}
+            <li class="flex items-start gap-2">
+                <span class="text-walmart-spark mt-1" aria-hidden="true">✦</span>
+                <span>{{ obj }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Content -->
+    <div class="space-y-4 mb-6">
+        {% for seccion in modulo.contenido %}
+        <div class="bg-white rounded-xl shadow-md p-6 fade-in">
+            <h2 class="text-lg font-bold text-walmart-blue mb-3">{{ seccion.titulo }}</h2>
+            <div class="text-walmart-gray-160 leading-relaxed whitespace-pre-line">{{ seccion.texto }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Practice -->
+    <div class="bg-gradient-to-r from-blue-50 to-yellow-50 rounded-xl shadow-md p-6 mb-6 border border-walmart-spark">
+        <h2 class="text-lg font-bold text-walmart-blue mb-3">🏆 Ejercicio Práctico</h2>
+        <p class="text-walmart-gray-160 mb-4">{{ modulo.practica }}</p>
+        <div class="bg-white/80 rounded-lg p-4">
+            <p class="text-sm text-walmart-gray-100">
+                <strong>💡 Tip:</strong> Realiza esta práctica con tu supervisor o un compañero de equipo.
+                Documenta lo aprendido para compartir en la sesión de equipo.
+            </p>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+        {% if not completado %}
+        <form action="/completar/{{ colaborador[0] }}/{{ modulo.id }}" method="POST" class="flex-1">
+            <button type="submit"
+                    class="w-full bg-walmart-green text-white py-3 px-6 rounded-lg font-medium hover:opacity-90 transition-opacity focus:ring-2 focus:ring-offset-2 focus:ring-walmart-green">
+                ✅ Marcar como Estudiado
+            </button>
+        </form>
+        {% endif %}
+        <a href="/test/{{ colaborador[0] }}/{{ modulo.id }}"
+           class="flex-1 bg-walmart-blue text-white py-3 px-6 rounded-lg font-medium text-center hover:bg-walmart-blue-hover transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-walmart-blue">
+            📝 Realizar Test
+            {% if mejor_nota is not none %}
+                <span class="text-sm opacity-80">(Mejor nota: {{ mejor_nota|int }}%)</span>
+            {% endif %}
+        </a>
+    </div>
+</div>
+{% endblock %}

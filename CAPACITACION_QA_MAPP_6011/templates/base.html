@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Capacitación QA{% endblock %} | Walmart Chile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        walmart: {
+                            blue: '#0053e2',
+                            'blue-hover': '#004ac9',
+                            'blue-pressed': '#003da6',
+                            spark: '#ffc220',
+                            'spark-dark': '#995213',
+                            red: '#ea1100',
+                            green: '#2a8703',
+                            'gray-5': '#f8f8f8',
+                            'gray-10': '#f1f1f2',
+                            'gray-50': '#c4c4c4',
+                            'gray-100': '#74767c',
+                            'gray-160': '#2e2f32',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        .spark-border { border-left: 4px solid #ffc220; }
+    </style>
+</head>
+<body class="bg-walmart-gray-5 text-walmart-gray-160 min-h-screen">
+    <!-- Nav -->
+    <nav class="bg-walmart-blue text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-walmart-spark text-2xl font-bold" aria-hidden="true">✦</span>
+                <a href="/" class="text-xl font-bold hover:text-walmart-spark transition-colors">Capacitación QA</a>
+                <span class="text-sm opacity-80 hidden sm:inline">| Centro de Distribución Quilicura</span>
+            </div>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="/admin/progreso" class="hover:text-walmart-spark transition-colors"
+                   aria-label="Ver progreso del equipo">📊 Progreso</a>
+                <a href="/admin/calendario" class="hover:text-walmart-spark transition-colors"
+                   aria-label="Ver calendario de sesiones">📅 Calendario</a>
+                <a href="/" class="hover:text-walmart-spark transition-colors"
+                   aria-label="Cambiar usuario">👤 Cambiar Usuario</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-walmart-gray-160 text-white text-center py-4 mt-12">
+        <p class="text-sm">✦ Walmart Chile - Programa de Capacitación QA 2026 - Mapp ✦</p>
+        <p class="text-xs opacity-60 mt-1">Nivelación de conocimientos teóricos y prácticos del área QA</p>
+    </footer>
+</body>
+</html>
